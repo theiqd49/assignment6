@@ -1,0 +1,166 @@
+
+from pymongo import MongoClient
+import logging
+import datetime
+from bson.objectid import ObjectId
+
+LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
+
+
+class report_db_api(object):
+    def __init__(self):
+        self.log = logging
+        self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
+        client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj.mongodb.net/"
+                             "test?retryWrites=true&w=majority")
+        db = client.apt
+        self.collection = db.report
+
+        server_status_result = db.command("serverStatus")
+        self.log.info(server_status_result)
+
+    def add_report(self, r_uid, r_url, r_time, r_location="Mars", r_description="None", r_tag_list=[]):
+        """
+
+        :param r_uid: Report id
+        :type r_uid: str
+        :param r_url: Url of the report's image. At present, the number of image is 1 per report
+        :type r_url: str
+        :param r_time: Time that the report is created
+        :type r_time: datetime
+        :param r_location: Location tagged on this report. Default is "Mars"
+        :type r_location: str
+        :param r_description: Description of this report. Default is "None"
+        :type r_description: str
+        :param r_tag_list: List of tags(str) of this report
+        :type r_tag_list: list[str]
+        :return: _id of the inserted report in the "report" collection
+        :rtype: str
+        """
+
+        assert type(r_uid) == str
+        # TODO: r_uid must exist in the colletion "user"...
+        assert type(r_url) == str
+        # TODO: r_url should fit some kind of regex...
+        assert isinstance(r_time, datetime.datetime)
+        assert type(r_location) == str
+        assert type(r_description) == str
+        assert isinstance(r_tag_list, list)
+        for _tag in r_tag_list:
+            assert type(_tag) == str
+
+        one_report = {"r_uid": r_uid,
+                      "r_url": r_url,
+                      "r_time": r_time,
+                      "r_location": r_location,
+                      "r_description": r_description,
+                      "r_tag_list": r_tag_list}
+        result = self.collection.insert_one(one_report)
+        self.log.info("New report inserted. New report id: %s" % result.inserted_id)
+        return result.inserted_id
+
+    def get_report_by_rid(self, r_id):
+        """
+
+        :param r_id: The _id of the report you want to get
+        :type r_id: str
+        :return: result of the get method
+        :rtype: dict
+        """
+
+        assert type(r_id) == str
+
+        result = self.collection.find_one({"_id": r_id})
+        if result:
+            self.log.info("Get report %s." % r_id)
+        else:
+            self.log.error("Get report %s failed. " % r_id)
+        return result
+
+    def fast_get_report_by_rid(self, r_id):
+        """
+        TODO
+        :param r_id: The _id of the report you want to get
+        :type r_id: str
+        :return: result of the get method
+        :rtype: dict
+        """
+
+        assert type(r_id) == str
+
+        result = self.collection.find_one({"_id": r_id})
+        self.log.info("Get report %s" % r_id)
+        return result
+
+    def search_report_by_tag(self, r_tag_list=[]):
+        """
+
+        :param r_tag_list: Target tags
+        :type r_tag_list: list[str]
+        :return: target reports
+        :rtype: list[dict]
+        """
+        assert isinstance(r_tag_list, list)
+        for _tag in r_tag_list:
+            assert type(_tag) == str
+
+        report_list = []
+        for _report in self.collection.find():
+            if set(_report["r_tag_list"]) & set(r_tag_list):
+                self.log.info("Find report with tag(s) \"%s\": _id:%s" % (str(set(r_tag_list)), _report["_id"]))
+                report_list.append(_report)
+
+        if report_list:
+            self.log.info("Find %d report(s) with tag(s) \"%s\"." % (len(report_list), str(set(r_tag_list))))
+        else:
+            self.log.warning("Unable to find report with tag(s) \"%s\"." % str(set(r_tag_list)))
+
+        return report_list
+
+    def search_report_by_location(self, r_location="Mars"):
+        """
+
+        :param r_location: Target location
+        :type r_location: str
+        :return: target reports
+        :rtype: list[dict]
+        """
+        assert type(r_location) == str
+
+        report_list = []
+        for _report in self.collection.find():
+            if _report["r_location"] == r_location:
+                report_list.append(_report)
+                self.log.info("Find report with r_location \"%s\": _id:%s" % (r_location, _report["_id"]))
+        if report_list:
+            self.log.info("Find %d report(s) with location \"%s\"." % (len(report_list), r_location))
+        else:
+            self.log.warning("Unable to find report with location \"%s\"." % r_location)
+        return report_list
+
+    def delete_report_by_id(self, r_id):
+        """
+
+        :param r_id: Id of the report you wish to delete
+        :type r_id: str
+        """
+        # assert the type of r_id is no need,
+        # since function ObjectID will help us judge wether it is a legal id.
+
+        result = self.collection.delete_one({"_id": ObjectId(r_id)})
+        if result.deleted_count:
+            self.log.info("Report deleted. ID: %s" % r_id)
+        else:
+            self.log.warning("Report deletion failed: %s" % result.raw_result)
+
+
+# Below is the test part.
+if __name__ == "__main__":
+    report = report_db_api()
+    now = datetime.datetime.now()
+    id = report.add_report("admin", "url", now)
+    print(report.get_report_by_rid(id))
+    print(report.search_report_by_location("Mars"))
+    report.delete_report_by_id(id)
+    report.delete_report_by_id(id)
+    report.add_report()
