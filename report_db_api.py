@@ -1,8 +1,12 @@
+# Mongodb compass connection string:
+# mongodb+srv://yiran:yiran@cluster0-uaytj.mongodb.net/test?retryWrites=true&w=majority
 
 from pymongo import MongoClient
 import logging
 import datetime
+import time
 from bson.objectid import ObjectId
+from user_db_api import user_db_api
 
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
@@ -15,6 +19,7 @@ class report_db_api(object):
                              "test?retryWrites=true&w=majority")
         db = client.apt
         self.collection = db.report
+        self.user_db_api = user_db_api()
 
         server_status_result = db.command("serverStatus")
         self.log.info(server_status_result)
@@ -23,11 +28,11 @@ class report_db_api(object):
         """
 
         :param r_uid: Report id
-        :type r_uid: str
+        :type r_uid: str or ObjectID
         :param r_url: Url of the report's image. At present, the number of image is 1 per report
         :type r_url: str
         :param r_time: Time that the report is created
-        :type r_time: datetime
+        :type r_time: datetime.datetime
         :param r_location: Location tagged on this report. Default is "Mars"
         :type r_location: str
         :param r_description: Description of this report. Default is "None"
@@ -35,14 +40,16 @@ class report_db_api(object):
         :param r_tag_list: List of tags(str) of this report
         :type r_tag_list: list[str]
         :return: _id of the inserted report in the "report" collection
-        :rtype: str
+        :rtype: ObjectId
         """
 
-        assert type(r_uid) == str
-        # TODO: r_uid must exist in the colletion "user"...
+        assert type(r_uid) == str or type(r_uid) == ObjectId
+        if type(r_uid) == str:
+            r_uid = ObjectId(r_uid)
+        assert self.user_db_api.exists_uid(r_uid)
         assert type(r_url) == str
         # TODO: r_url should fit some kind of regex...
-        assert isinstance(r_time, datetime.datetime)
+        assert type(r_time) == datetime.datetime
         assert type(r_location) == str
         assert type(r_description) == str
         assert isinstance(r_tag_list, list)
@@ -63,13 +70,12 @@ class report_db_api(object):
         """
 
         :param r_id: The _id of the report you want to get
-        :type r_id: str
+        :type r_id: ObjectId
         :return: result of the get method
         :rtype: dict
         """
 
-        assert type(r_id) == str
-
+        assert type(r_id) == ObjectId
         result = self.collection.find_one({"_id": r_id})
         if result:
             self.log.info("Get report %s." % r_id)
@@ -86,7 +92,7 @@ class report_db_api(object):
         :rtype: dict
         """
 
-        assert type(r_id) == str
+        assert type(r_id) == ObjectId
 
         result = self.collection.find_one({"_id": r_id})
         self.log.info("Get report %s" % r_id)
@@ -142,12 +148,11 @@ class report_db_api(object):
         """
 
         :param r_id: Id of the report you wish to delete
-        :type r_id: str
+        :type r_id: ObjectId
         """
-        # assert the type of r_id is no need,
-        # since function ObjectID will help us judge wether it is a legal id.
+        assert type(r_id) == ObjectId
 
-        result = self.collection.delete_one({"_id": ObjectId(r_id)})
+        result = self.collection.delete_one({"_id": r_id})
         if result.deleted_count:
             self.log.info("Report deleted. ID: %s" % r_id)
         else:
@@ -156,11 +161,21 @@ class report_db_api(object):
 
 # Below is the test part.
 if __name__ == "__main__":
+    print("Test1: init a report_db_api object and connect to db.")
     report = report_db_api()
     now = datetime.datetime.now()
-    id = report.add_report("admin", "url", now)
-    print(report.get_report_by_rid(id))
-    print(report.search_report_by_location("Mars"))
-    report.delete_report_by_id(id)
-    report.delete_report_by_id(id)
-    report.add_report()
+    time.sleep(1)
+    print("Test2: add a new report with user id(u_id), target url and time. ")
+    test_id = report.add_report("5d8eda3ee1b75277bae9e187", "url", now)
+    time.sleep(1)
+    print("Test3: get a detailed report by report id(r_id). ")
+    print("Detailed report: ", report.get_report_by_rid(test_id))
+    time.sleep(1)
+    print("Test4: get a detailed report by location of the report. ")
+    print("Detailed report: ", report.search_report_by_location("Mars"))
+    time.sleep(1)
+    print("Test5: delete a report by id. ")
+    report.delete_report_by_id(test_id)
+    time.sleep(1)
+    print("Test6: delete a report which is not exist in the db. ")
+    report.delete_report_by_id(test_id)
