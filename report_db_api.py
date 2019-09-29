@@ -12,24 +12,39 @@ LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
 
 class report_db_api(object):
+    """
+    A class contains all interfaces to manipulate report data in Mongodb
+    TODO:
+    Attributes
+    ----
+
+    Methods
+    ----
+
+    """
     def __init__(self):
+        """
+        Init and connect to db.
+        """
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj.mongodb.net/"
-                             "test?retryWrites=true&w=majority")
+        client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj."
+                             "mongodb.net/test?retryWrites=true&w=majority")
         db = client.apt
         self.collection = db.report
         self.user_db_api = user_db_api()
 
         server_status_result = db.command("serverStatus")
-        self.log.info(server_status_result)
+        self.log.debug(server_status_result)
 
-    def add_report(self, r_uid, r_url, r_time, r_location="Mars", r_description="None", r_tag_list=[]):
+    def add_report(self, r_uid, r_url, r_time, r_location="Mars",
+                   r_description="None", r_tag_list=[]):
         """
-
+        Add a new report to the report collection.
         :param r_uid: Report id
         :type r_uid: str or ObjectID
-        :param r_url: Url of the report's image. At present, the number of image is 1 per report
+        :param r_url: Url of the report's image. At present, the number of
+        image is 1 per report
         :type r_url: str
         :param r_time: Time that the report is created
         :type r_time: datetime.datetime
@@ -63,12 +78,13 @@ class report_db_api(object):
                       "r_description": r_description,
                       "r_tag_list": r_tag_list}
         result = self.collection.insert_one(one_report)
-        self.log.info("New report inserted. New report id: %s" % result.inserted_id)
+        self.log.debug("New report inserted. New report id: %s"
+                       % result.inserted_id)
         return result.inserted_id
 
     def get_report_by_rid(self, r_id):
         """
-
+        Get a report by report id(r_id).
         :param r_id: The _id of the report you want to get
         :type r_id: ObjectId
         :return: result of the get method
@@ -78,9 +94,9 @@ class report_db_api(object):
         assert type(r_id) == ObjectId
         result = self.collection.find_one({"_id": r_id})
         if result:
-            self.log.info("Get report %s." % r_id)
+            self.log.debug("Get report %s." % r_id)
         else:
-            self.log.error("Get report %s failed. " % r_id)
+            self.log.warn("Get report %s failed. " % r_id)
         return result
 
     def fast_get_report_by_rid(self, r_id):
@@ -95,12 +111,14 @@ class report_db_api(object):
         assert type(r_id) == ObjectId
 
         result = self.collection.find_one({"_id": r_id})
-        self.log.info("Get report %s" % r_id)
+        self.log.debug("Get report %s" % r_id)
         return result
 
     def search_report_by_tag(self, r_tag_list=[]):
         """
-
+        Search report by the given tag list.
+        If the tag list of the report and the target tag list have at least
+        one same tag, then recall this report.
         :param r_tag_list: Target tags
         :type r_tag_list: list[str]
         :return: target reports
@@ -113,19 +131,22 @@ class report_db_api(object):
         report_list = []
         for _report in self.collection.find():
             if set(_report["r_tag_list"]) & set(r_tag_list):
-                self.log.info("Find report with tag(s) \"%s\": _id:%s" % (str(set(r_tag_list)), _report["_id"]))
+                self.log.debug("Find report with tag(s) \"%s\": _id:%s"
+                               % (str(set(r_tag_list)), _report["_id"]))
                 report_list.append(_report)
 
         if report_list:
-            self.log.info("Find %d report(s) with tag(s) \"%s\"." % (len(report_list), str(set(r_tag_list))))
+            self.log.debug("Find %d report(s) with tag(s) \"%s\"."
+                           % (len(report_list), str(set(r_tag_list))))
         else:
-            self.log.warning("Unable to find report with tag(s) \"%s\"." % str(set(r_tag_list)))
+            self.log.warning("Unable to find report with tag(s) \"%s\"."
+                             % str(set(r_tag_list)))
 
         return report_list
 
     def search_report_by_location(self, r_location="Mars"):
         """
-
+        Recall reports that have the same location as the target location
         :param r_location: Target location
         :type r_location: str
         :return: target reports
@@ -137,16 +158,19 @@ class report_db_api(object):
         for _report in self.collection.find():
             if _report["r_location"] == r_location:
                 report_list.append(_report)
-                self.log.info("Find report with r_location \"%s\": _id:%s" % (r_location, _report["_id"]))
+                self.log.debug("Find report with r_location \"%s\": _id:%s"
+                               % (r_location, _report["_id"]))
         if report_list:
-            self.log.info("Find %d report(s) with location \"%s\"." % (len(report_list), r_location))
+            self.log.debug("Find %d report(s) with location \"%s\"."
+                           % (len(report_list), r_location))
         else:
-            self.log.warning("Unable to find report with location \"%s\"." % r_location)
+            self.log.warning("Unable to find report with location \"%s\"."
+                             % r_location)
         return report_list
 
     def delete_report_by_id(self, r_id):
         """
-
+        Delete one report according to report id(r_id)
         :param r_id: Id of the report you wish to delete
         :type r_id: ObjectId
         """
@@ -154,7 +178,7 @@ class report_db_api(object):
 
         result = self.collection.delete_one({"_id": r_id})
         if result.deleted_count:
-            self.log.info("Report deleted. ID: %s" % r_id)
+            self.log.debug("Report deleted. ID: %s" % r_id)
         else:
             self.log.warning("Report deletion failed: %s" % result.raw_result)
 
