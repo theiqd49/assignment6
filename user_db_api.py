@@ -3,16 +3,29 @@ import datetime
 import logging
 from bson.objectid import ObjectId
 
+# TODO: put LOG_FORMAT in common place
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
 
 class user_db_api(object):
+    """
+    A class contains all interfaces to manipulate user data in Mongodb
+    
+    TODO:
+    Attributes
+    ----------   
+
+    Methods
+    -------
+    
+    """
 
     def __init__(self):
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
         client = MongoClient(
-            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/test?retryWrites=true&w=majority")
+            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
+            "test?retryWrites=true&w=majority")
 
         db = client.apt
         self.collection = db.user
@@ -21,14 +34,26 @@ class user_db_api(object):
         self.log.info(server_status_result)
 
     def exists_email(self, u_email):
+        """
+        Return whether email address exists in user records, if exist
+            return first record, if not exist, return None
+        """
         return self.collection.find({"u_email": u_email}).limit(1)
 
     def exists_uid(self, u_id):
+        """
+        Return whether user id exists in user records, if exist
+            return first record, if not exist, return None
+        """
         return self.collection.find({"_id": u_id}).limit(1)
 
     def add_user(self, u_email, u_username, u_password,
-                 u_gender=None, u_phone=None, u_description="None", u_avatar="None", u_report_list=[]):
+                 u_gender=None, u_phone=None, u_description="None",
+                 u_avatar="None", u_report_list=[]):
         """
+        Add one user record into database, need to provide at least email and 
+           password
+        TODO: password may need to be salted
 
         :param u_email: user email string
         :param u_username: username string
@@ -68,6 +93,7 @@ class user_db_api(object):
 
     def get_user_by_uid(self, u_id):
         """
+        Return user report in dict format by user id
 
         :param u_id: The _id of the user you are trying to get
         :return: result of the get method
@@ -84,6 +110,7 @@ class user_db_api(object):
     def get_user_by_username(self, u_username):
         """
 
+        Return user report in dict format by username
         :param u_username: the u_username of the user you are trying to get
         :type u_username: str
         :return: result of the get method
@@ -101,6 +128,7 @@ class user_db_api(object):
     def modify_username(self, u_id, new_username):
         """
 
+        Modify username for user identified by user id        
         :param u_id: the u_id of the user whose username is to be modified
         :param new_username: str
         """
@@ -120,6 +148,8 @@ class user_db_api(object):
 
     def modify_password(self, u_id, old_password, new_password):
         """
+        Modify password for user identified by user id, need to verify the 
+            old password before update
 
         :param u_id: u_id of the user who is trying to modify password
         :param old_password: old password str
@@ -139,6 +169,7 @@ class user_db_api(object):
 
     def delete_user_by_id(self, u_id):
         """
+        Delete user report identified by user id in database 
 
         :param u_id: delete user by u_id
         """
