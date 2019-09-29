@@ -1,0 +1,33 @@
+import datetime
+import time
+from user_db_api import user_db_api
+
+if __name__ == "__main__":
+    print("Test1: init a user_db_api object and connect to db.")
+    user = user_db_api()
+    now = datetime.datetime.now()
+    time.sleep(1)
+    print("Test2: add a new user with u_username, u_email and u_password.")
+    id = user.add_user("test@utexas.edu", "test", "admin")
+    time.sleep(1)
+    print("Test3: get a new user by user id _id.")
+    print(user.get_user_by_uid(id))
+    time.sleep(1)
+    print("Test4: get a new user by username u_username")
+    print(user.get_user_by_username("test"))
+    time.sleep(1)
+    print("Test5: delete a user by user id _id.")
+    user.delete_user_by_id(id)
+    time.sleep(1)
+    print("Test6: delete a non-exist user by user id _id.")
+    user.delete_user_by_id(id)
+    id1 = user.add_user("admin1@utexas.edu", "admin1", "admin1")
+    print(user.get_user_by_uid(id1))
+    time.sleep(1)
+    print("Test7: modify username by user id _id")
+    user.modify_username(id1, "modified_admin1")
+    print(user.get_user_by_uid(id1))
+    time.sleep(1)
+    print("Test8: modify user password by user id _id and old password")
+    user.modify_password(id1, "admin1", "modified_admin1")
+    print(user.get_user_by_uid(id1))
