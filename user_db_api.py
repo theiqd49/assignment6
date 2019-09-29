@@ -70,13 +70,12 @@ class user_db_api(object):
         """
 
         :param u_id: The _id of the user you are trying to get
-        :type u_id: str
         :return: result of the get method
         :rtype: dict
         """
 
         result = self.collection.find_one({"_id": u_id})
-        if result:
+        if result is not None:
             self.log.info("Get user %s." % u_id)
         else:
             self.log.error("Get user %s failed. " % u_id)
@@ -109,6 +108,7 @@ class user_db_api(object):
 
         if self.exists_uid(u_id) is not None:
             my_query = {"_id": u_id}
+            self.log.info("check if username already exists, get user by username")
             if self.get_user_by_username(new_username) is None:
                 new_values = {"$set": {"u_username": new_username}}
                 result = self.collection.update_one(my_query, new_values)
@@ -153,16 +153,23 @@ class user_db_api(object):
 
 # Below is the test part
 if __name__ == "__main__":
+    print("Test1: init a user_db_api object and connect to db.")
     user = user_db_api()
-    now = datetime.datetime.now()
-    id = user.add_user("test", "test@utexas.edu", "admin")
+    print("Test2: add a new user with u_username, u_email and u_password.")
+    id = user.add_user("test@utexas.edu", "test", "admin")
+    print("Test3: get a new user by user id _id.")
     print(user.get_user_by_uid(id))
+    print("Test4: get a new user by username u_username")
     print(user.get_user_by_username("test"))
+    print("Test5: delete a user by user id _id.")
     user.delete_user_by_id(id)
+    print("Test6: delete a non-exist user by user id _id.")
     user.delete_user_by_id(id)
-    id1 = user.add_user("admin1", "admin1@utexas.edu", "admin1")
+    id1 = user.add_user("admin1@utexas.edu", "admin1", "admin1")
     print(user.get_user_by_uid(id1))
+    print("Test7: modify username by user id _id")
     user.modify_username(id1, "modified_admin1")
     print(user.get_user_by_uid(id1))
+    print("Test8: modify user password by user id _id and old password")
     user.modify_password(id1, "admin1", "modified_admin1")
     print(user.get_user_by_uid(id1))
