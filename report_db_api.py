@@ -37,7 +37,7 @@ class report_db_api(object):
         server_status_result = db.command("serverStatus")
         self.log.debug(server_status_result)
 
-    def add_report(self, r_uid, r_url, r_time, r_location="Mars",
+    def add_report(self, r_uid, r_url, r_time, r_tname, r_location="Mars",
                    r_description="None", r_tag_list=[]):
         """
         Add a new report to the report collection.
@@ -48,6 +48,8 @@ class report_db_api(object):
         :type r_url: str
         :param r_time: Time that the report is created
         :type r_time: datetime.datetime
+        :param r_tname: Theme name of the report
+        :type r_tname: str
         :param r_location: Location tagged on this report. Default is "Mars"
         :type r_location: str
         :param r_description: Description of this report. Default is "None"
@@ -65,6 +67,9 @@ class report_db_api(object):
         assert type(r_url) == str
         # TODO: r_url should fit some kind of regex...
         assert type(r_time) == datetime.datetime
+        # I don't think we need to check whether a theme exist here,
+        # since it is not a value that can be edited by users.
+        assert type(r_tname) == str
         assert type(r_location) == str
         assert type(r_description) == str
         assert isinstance(r_tag_list, list)
@@ -74,6 +79,7 @@ class report_db_api(object):
         one_report = {"r_uid": r_uid,
                       "r_url": r_url,
                       "r_time": r_time,
+                      "r_tname": r_tname,
                       "r_location": r_location,
                       "r_description": r_description,
                       "r_tag_list": r_tag_list}
@@ -190,7 +196,7 @@ if __name__ == "__main__":
     now = datetime.datetime.now()
     time.sleep(1)
     print("Test2: add a new report with user id(u_id), target url and time. ")
-    test_id = report.add_report("5d8eda3ee1b75277bae9e187", "url", now)
+    test_id = report.add_report("5d8eda3ee1b75277bae9e187", "url", now, "theme_name")
     time.sleep(1)
     print("Test3: get a detailed report by report id(r_id). ")
     print("Detailed report: ", report.get_report_by_rid(test_id))
