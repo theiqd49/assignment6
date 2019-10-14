@@ -160,14 +160,15 @@ class user_db_api(object):
         :param new_password: new password str
         """
         assert type(old_password) == str
-        # TODO: check if old_password is valid
         assert type(new_password) == str
-
         if self.exists_uid(u_id) is not None:
             my_query = {"_id": u_id}
-            new_values = {"$set": {"u_password": new_password}}
-            result = self.collection.update_one(my_query, new_values)
-            self.log.info("Password modified for user ID: %s" % u_id)
+            if check_password_hash(self, old_password):
+                new_values = {"$set": {"u_password": generate_password_hash(new_password)}}
+                result = self.collection.update_one(my_query, new_values)
+                self.log.info("Password modified for user ID: %s" % u_id)
+            else:
+                self.log.warning("Wrong password")
         else:
             self.log.warning("User not exist")
 
