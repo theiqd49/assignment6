@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import datetime
 import logging
 from bson.objectid import ObjectId
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # TODO: put LOG_FORMAT in common place
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
@@ -57,7 +58,7 @@ class user_db_api(object):
 
         :param u_email: user email string
         :param u_username: username string
-        :param u_password: password string
+        :param u_password: password hash string
         :param u_gender: gender, 0: female, 1: male, 2 other
         :param u_phone: phone number string
         :param u_description: description string
@@ -80,7 +81,7 @@ class user_db_api(object):
 
         new_user = {"u_email": u_email,
                     "u_username": u_username,
-                    "u_password": u_password,
+                    "u_password": generate_password_hash(u_password),
                     "u_gender": u_gender,
                     "u_phone": u_phone,
                     "u_description": u_description,
@@ -145,6 +146,9 @@ class user_db_api(object):
                 self.log.warning("Username taken")
         else:
             self.log.warning("User not exist")
+
+    def check_password(self, password):
+        return check_password_hash(self.u_password, password)
 
     def modify_password(self, u_id, old_password, new_password):
         """
