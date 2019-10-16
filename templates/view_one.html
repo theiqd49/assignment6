@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <h1>Team14 WebApp</h1>
+    <style>
+        h1 {text-align:center;}
+        h2 {text-align:left;}
+        h3 {text-align:left;}
+        body {background-color:white;}
+        #tab ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+        #tab li {
+            display:inline;
+            color: #000;
+            padding: 8px 32px;
+            text-decoration: none;
+        }
+
+        .report{
+            display: table-cell;
+        }
+        .description {
+            padding: 10px;
+            display: table-cell;
+        }
+
+    ul.reportlist {
+        list-style:none;
+    }
+
+
+
+    </style>
+<body>
+
+<div id="tab">
+    <ul>
+        <li><a href="#manage">Manage</a></li>
+        <li><a href="#create">Create</a></li>
+        <li><a href="{{url_for('view')}}">View</a></li>
+        <li><a href="#search">Search</a></li>
+        <li><a href="#social">Social</a></li>
+    </ul>
+</div>
+
+<h2>Theme name</h2>
+<button class="button"> Subscribe </button>
+<hr>
+<ul class="reportlist">
+    <li>
+        <div class = "report" >
+            <h3>Report Heading</h3>
+            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait" height="120" width="120"/>
+         </div>
+
+        <div class = "description">
+            <p>Time: Oct. 11 2019</p>
+            <p>author</p>
+            <p>tags:
+            <ul>
+            <li>tag1</li>
+            <li>tag2</li>
+            <li>tag3</li>
+            </ul>
+            </p>
+            <p>OK, by the end of the phase of the project, you will likely have user interfaces that fit roughly in
+            the following categories (these are examples, please adapt them to your individual project as
+            needed)</p>
+        </div>
+    <hr>
+    </li>
+
+    <li>
+        <div class = "report" >
+            <h3>Report Heading</h3>
+            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait" height="120" width="120"/>
+         </div>
+
+        <div class = "description">
+            <p>Time: Oct. 11 2019</p>
+            <p>author</p>
+            <p>tags:
+            <ul>
+            <li>tag1</li>
+            <li>tag2</li>
+            <li>tag3</li>
+            </ul>
+            </p>
+            <p>OK, by the end of the phase of the project, you will likely have user interfaces that fit roughly in
+            the following categories (these are examples, please adapt them to your individual project as
+            needed)</p>
+        </div>
+    <hr>
+    </li>
+
+    <li>
+        <div class = "report" >
+            <h3>Report Heading</h3>
+            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait" height="120" width="120"/>
+         </div>
+
+        <div class = "description">
+            <p>Time: Oct. 11 2019</p>
+            <p>author</p>
+            <p>tags:
+            <ul>
+            <li>tag1</li>
+            <li>tag2</li>
+            <li>tag3</li>
+            </ul>
+            </p>
+            <p>OK, by the end of the phase of the project, you will likely have user interfaces that fit roughly in
+            the following categories (these are examples, please adapt them to your individual project as
+            needed)</p>
+        </div>
+    <hr>
+    </li>
+
+</ul>
+
+</body>
+</html>
