@@ -50,12 +50,13 @@ class user_db_api(object):
 
     def add_user(self, u_email, u_username, u_password,
                  u_gender=None, u_phone=None, u_description="None",
-                 u_avatar="None", u_report_list=[]):
+                 u_avatar="None", u_report_list=[], u_subscribed_themes=[]):
         """
         Add one user record into database, need to provide at least email and 
            password
         TODO: password may need to be salted
 
+        :param u_subscribed_themes: user subscribed themes string list
         :param u_email: user email string
         :param u_username: username string
         :param u_password: password hash string
@@ -78,6 +79,8 @@ class user_db_api(object):
         assert isinstance(u_report_list, list)
         for _report in u_report_list:
             assert type(_report) == str
+        for _subscribed in u_subscribed_themes:
+            assert type(_subscribed) == str
 
         new_user = {"u_email": u_email,
                     "u_username": u_username,
@@ -86,7 +89,8 @@ class user_db_api(object):
                     "u_phone": u_phone,
                     "u_description": u_description,
                     "u_avatar": u_avatar,
-                    "u_report_list": u_report_list
+                    "u_report_list": u_report_list,
+                    "u_subscribed_themes": u_subscribed_themes
                     }
         result = self.collection.insert_one(new_user)
         self.log.info("New user inserted. New user id: %s" % result.inserted_id)
@@ -147,8 +151,6 @@ class user_db_api(object):
         else:
             self.log.warning("User not exist")
 
-    def check_password(self, password):
-        return check_password_hash(self.u_password, password)
 
     def modify_password(self, u_id, old_password, new_password):
         """
@@ -163,7 +165,7 @@ class user_db_api(object):
         assert type(new_password) == str
         if self.exists_uid(u_id) is not None:
             my_query = {"_id": u_id}
-            if check_password_hash(self, old_password):
+            if check_password_hash(self.get_user_by_uid(u_id)['u_password'], old_password):
                 new_values = {"$set": {"u_password": generate_password_hash(new_password)}}
                 result = self.collection.update_one(my_query, new_values)
                 self.log.info("Password modified for user ID: %s" % u_id)
@@ -185,6 +187,12 @@ class user_db_api(object):
                 self.log.info("User deleted. ID: %s" % u_id)
             else:
                 self.log.warning("User deletion failed: %s" % result.raw_result)
+
+    def get_subscribed_theme_by_id(self, u_id):
+        if self.exists_uid(u_id) is not None:
+            return self.get_user_by_uid(u_id)['u_subscribed_themes']
+        else:
+            self.log.warning("User not exist")
 
 
 # Below is the test part
