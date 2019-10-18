@@ -23,7 +23,7 @@ class theme_db_api(object):
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
         client = MongoClient(
-            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
+            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/"
             "test?retryWrites=true&w=majority")
 
         db = client.apt
@@ -37,7 +37,10 @@ class theme_db_api(object):
         Return whether theme name exists in theme collection, if exist
             return first record, if not exist, return None
         """
-        return self.collection.find({"t_name": t_name}).limit(1)
+        return self.collection.count_documents({'t_name': t_name}, limit=1) != 0
+
+    # find doesn't return a boolean value, it returns a cursor.
+    # To check if that cursor contains any documents, use the cursors count_documents-method.
 
     def add_theme(self, t_name, t_coverimage, t_description="None",
                   t_image_list=[]):
@@ -65,7 +68,7 @@ class theme_db_api(object):
                      "t_coverimage": t_coverimage,
                      "t_description": t_description,
                      "t_image_list": t_image_list}
-        if self.exists_theme(t_name) is None:
+        if not self.exists_theme(t_name):
             result = self.collection.insert_one(one_theme)
             self.log.info("New theme inserted. New theme id: %s" % result.inserted_id)
             return result.inserted_id
@@ -101,8 +104,10 @@ if __name__ == "__main__":
     print("Test1: init a report_db_api object and connect to db.")
     theme = theme_db_api()
     print("Test2: add a new theme with t_name, t_coverimage and t_description.")
-    theme.add_theme("Skys", "Sky_url", "The Description of Sky")
-    theme.add_theme("Grass", "Grass_url", "The Description of Grass")
+    img = ["address"]
+    theme.add_theme("Sky", "Sky_url", "The Description of Sky", img)
+    theme.add_theme("Grass", "Grass_url", "The Description of Grass", img)
+    theme.add_theme("Portrait", "Grass_url", "The Description of Grass", img)
     print("Test3: get a theme by theme name")
     print(theme.get_theme_by_name("Sky"))
     print("Test4: get all theme")

@@ -39,14 +39,14 @@ class user_db_api(object):
         Return whether email address exists in user records, if exist
             return first record, if not exist, return None
         """
-        return self.collection.find({"u_email": u_email}).limit(1)
+        return self.collection.count_documents({'u_email': u_email}, limit=1) != 0
 
     def exists_uid(self, u_id):
         """
         Return whether user id exists in user records, if exist
             return first record, if not exist, return None
         """
-        return self.collection.find({"_id": u_id}).limit(1)
+        return self.collection.count_documents({'u_id': u_id}, limit=1) != 0
 
     def add_user(self, u_email, u_username, u_password,
                  u_gender=None, u_phone=None, u_description="None",
@@ -92,9 +92,12 @@ class user_db_api(object):
                     "u_report_list": u_report_list,
                     "u_subscribed_themes": u_subscribed_themes
                     }
-        result = self.collection.insert_one(new_user)
-        self.log.info("New user inserted. New user id: %s" % result.inserted_id)
-        return result.inserted_id
+        if not self.exists_email(u_email):
+            result = self.collection.insert_one(new_user)
+            self.log.info("New user inserted. New user id: %s" % result.inserted_id)
+            return result.inserted_id
+        else:
+            self.log.warning("User already exist")
 
     def get_user_by_uid(self, u_id):
         """
@@ -139,7 +142,7 @@ class user_db_api(object):
         """
         assert type(new_username) == str
 
-        if self.exists_uid(u_id) is not None:
+        if self.exists_uid(u_id):
             my_query = {"_id": u_id}
             self.log.info("check if username already exists, get user by username")
             if self.get_user_by_username(new_username) is None:
@@ -150,7 +153,6 @@ class user_db_api(object):
                 self.log.warning("Username taken")
         else:
             self.log.warning("User not exist")
-
 
     def modify_password(self, u_id, old_password, new_password):
         """
@@ -163,7 +165,7 @@ class user_db_api(object):
         """
         assert type(old_password) == str
         assert type(new_password) == str
-        if self.exists_uid(u_id) is not None:
+        if self.exists_uid(u_id):
             my_query = {"_id": u_id}
             if check_password_hash(self.get_user_by_uid(u_id)['u_password'], old_password):
                 new_values = {"$set": {"u_password": generate_password_hash(new_password)}}
@@ -180,7 +182,7 @@ class user_db_api(object):
 
         :param u_id: delete user by u_id
         """
-        if self.exists_uid(u_id) is not None:
+        if self.exists_uid(u_id):
             my_query = {"_id": u_id}
             result = self.collection.delete_one(my_query)
             if result.deleted_count:
@@ -189,7 +191,7 @@ class user_db_api(object):
                 self.log.warning("User deletion failed: %s" % result.raw_result)
 
     def get_subscribed_theme_by_id(self, u_id):
-        if self.exists_uid(u_id) is not None:
+        if self.exists_uid(u_id):
             return self.get_user_by_uid(u_id)['u_subscribed_themes']
         else:
             self.log.warning("User not exist")
