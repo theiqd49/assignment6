@@ -1,50 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <h1>Team14 WebApp</h1>
-    <style>
-        h1 {text-align:center;}
-        h2 {text-align:center;}
-        body {background-color:white;}
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            background-color: white;
-        }
-        li {
-            display:inline;
-            color: #000;
-            padding: 8px 32px;
-            text-decoration: none;
-        }
+{% extends "base.html" %}
 
-        ul.themelist{
-            margin:0 auto; width:536px; overflow:hidden;
-        }
-        ul.themelist li{ float:left; padding:4px 8px; width:160px;}
-        ul.themelist li img{ display:block; width:120px; height:120px;}
-
-    </style>
-</head>
-
-<body>
-<div id="tab">
-    <ul>
-        <li><a href="#manage">Manage</a></li>
-        <li><a href="#create">Create</a></li>
-        <li><a href="{{url_for('view')}}">View</a></li>
-        <li><a href="#search">Search</a></li>
-        <li><a href="#social">Social</a></li>
-    </ul>
-</div>
-
+{% block content %}
 <h2>View All Themes</h2>
 <hr>
 
 <ul class="themelist">
     <li>
-        <a href="{{url_for('view_one')}}" target="_blank">
+        <a href="{{ url_for('view_one',name=1) }}" target="_blank">
             <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
             <h3>Portrait</h3>
         </a>
@@ -53,9 +15,9 @@
                 image of a person in a still position.</p>
     </li>
     <li>
-        <a href="{{url_for('view_one')}}" target="_blank">
+        <a href="{{url_for('view_one',name=2)}}" target="_blank">
             <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
-            <h3>Portrait</h3>
+            <h3>Landscape</h3>
         </a>
         <button class="button"> Subscribe </button>
             <p>Description: a portrait is generally not a snapshot, but a composed
@@ -98,5 +60,5 @@
                 image of a person in a still position.</p>
     </li>
 </ul>
-</body>
-</html>
+
+{% endblock %}

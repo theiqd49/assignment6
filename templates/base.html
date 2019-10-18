@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <h1>Team14 WebApp</h1>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div id="tab">
+    <ul>
+        <li><a href="#manage">Manage</a></li>
+        <li><a href="#create">Create</a></li>
+        <li><a href="{{url_for('view')}}">View</a></li>
+        <li><a href="#search">Search</a></li>
+        <li><a href="#social">Social</a></li>
+    </ul>
+</div>
+{% block content %}{% endblock %}
+</body>
