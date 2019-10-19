@@ -1,79 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Theme name</h2>
-<button class="button"> Subscribe </button>
+<h2>{{ name }}</h2>
+<button class="button" onclick="subscribe()"> Subscribe </button>
+<!--TODO implement javascript-->
 <hr>
+{% if length!= 0 %}
 <ul class="reportlist">
+    {% for r in report %}
     <li>
         <div class = "report" >
-            <h3>Report Heading</h3>
             <img src="../static/images/portrait.jpg"  alt="Theme-Portrait" height="120" width="120"/>
          </div>
 
         <div class = "description">
-            <p>Time: Oct. 11 2019</p>
-            <p>author</p>
+            <t4>Theme: {{ r.r_tname }}</t4>
+            <p>Author: {{r.r_uid }}</p>
+            <p>Time: {{ r.r_time }}</p>
+            <p>Location: {{ r.r_location }}</p>
             <p>tags:
             <ul>
-            <li>tag1</li>
-            <li>tag2</li>
-            <li>tag3</li>
+            {% for t in r.r_tag_list %}
+              <li>{{ t }}</li>
+            {% endfor %}
             </ul>
             </p>
-            <p>OK, by the end of the phase of the project, you will likely have user interfaces that fit roughly in
-            the following categories (these are examples, please adapt them to your individual project as
-            needed)</p>
+            <p>Description: {{ r.r_description }}</p>
         </div>
     <hr>
     </li>
-
-    <li>
-        <div class = "report" >
-            <h3>Report Heading</h3>
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait" height="120" width="120"/>
-         </div>
-
-        <div class = "description">
-            <p>Time: Oct. 11 2019</p>
-            <p>author</p>
-            <p>tags:
-            <ul>
-            <li>tag1</li>
-            <li>tag2</li>
-            <li>tag3</li>
-            </ul>
-            </p>
-            <p>OK, by the end of the phase of the project, you will likely have user interfaces that fit roughly in
-            the following categories (these are examples, please adapt them to your individual project as
-            needed)</p>
-        </div>
-    <hr>
-    </li>
-
-    <li>
-        <div class = "report" >
-            <h3>Report Heading</h3>
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait" height="120" width="120"/>
-         </div>
-
-        <div class = "description">
-            <p>Time: Oct. 11 2019</p>
-            <p>author</p>
-            <p>tags:
-            <ul>
-            <li>tag1</li>
-            <li>tag2</li>
-            <li>tag3</li>
-            </ul>
-            </p>
-            <p>OK, by the end of the phase of the project, you will likely have user interfaces that fit roughly in
-            the following categories (these are examples, please adapt them to your individual project as
-            needed)</p>
-        </div>
-    <hr>
-    </li>
-
+    {% endfor %}
 </ul>
-
+    {% else %}
+      <div class= "emptyreport">
+	  <h4>No report under this theme yet :)</h4>
+      </div>
+     {% endif %}
 {% endblock %}

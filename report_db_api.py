@@ -37,7 +37,7 @@ class report_db_api(object):
         server_status_result = db.command("serverStatus")
         self.log.debug(server_status_result)
 
-    def add_report(self, r_uid, r_url, r_time, r_location="Mars",
+    def add_report(self, r_uid, r_url, r_time, r_tname, r_location="Mars",
                    r_description="None", r_tag_list=[]):
         """
         Add a new report to the report collection.
@@ -48,6 +48,8 @@ class report_db_api(object):
         :type r_url: str
         :param r_time: Time that the report is created
         :type r_time: datetime.datetime
+        :param r_tname: Theme name of the report
+        :type r_tname: str
         :param r_location: Location tagged on this report. Default is "Mars"
         :type r_location: str
         :param r_description: Description of this report. Default is "None"
@@ -61,10 +63,13 @@ class report_db_api(object):
         assert type(r_uid) == str or type(r_uid) == ObjectId
         if type(r_uid) == str:
             r_uid = ObjectId(r_uid)
-        assert self.user_db_api.exists_uid(r_uid)
+        # assert self.user_db_api.exists_uid(r_uid)
         assert type(r_url) == str
         # TODO: r_url should fit some kind of regex...
         assert type(r_time) == datetime.datetime
+        # I don't think we need to check whether a theme exist here,
+        # since it is not a value that can be edited by users.
+        assert type(r_tname) == str
         assert type(r_location) == str
         assert type(r_description) == str
         assert isinstance(r_tag_list, list)
@@ -74,6 +79,7 @@ class report_db_api(object):
         one_report = {"r_uid": r_uid,
                       "r_url": r_url,
                       "r_time": r_time,
+                      "r_tname": r_tname,
                       "r_location": r_location,
                       "r_description": r_description,
                       "r_tag_list": r_tag_list}
@@ -182,6 +188,11 @@ class report_db_api(object):
         else:
             self.log.warning("Report deletion failed: %s" % result.raw_result)
 
+    def get_report_by_tname(self, r_tname):
+        result = self.collection.find({"r_tname": r_tname})
+        self.log.debug("Get all reports under r_tname %s" % r_tname)
+        return result
+
 
 # Below is the test part.
 if __name__ == "__main__":
@@ -190,16 +201,22 @@ if __name__ == "__main__":
     now = datetime.datetime.now()
     time.sleep(1)
     print("Test2: add a new report with user id(u_id), target url and time. ")
-    test_id = report.add_report("5d8eda3ee1b75277bae9e187", "url", now)
-    time.sleep(1)
+    #test_id = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #test_id1 = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #test_id2 = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #test_id3 = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #time.sleep(1)
     print("Test3: get a detailed report by report id(r_id). ")
-    print("Detailed report: ", report.get_report_by_rid(test_id))
-    time.sleep(1)
+    #print("Detailed report: ", report.get_report_by_rid(test_id))
+    #time.sleep(1)
     print("Test4: get a detailed report by location of the report. ")
     print("Detailed report: ", report.search_report_by_location("Mars"))
-    time.sleep(1)
+    # time.sleep(1)
     # print("Test5: delete a report by id. ")
     # report.delete_report_by_id(test_id)
     # time.sleep(1)
     # print("Test6: delete a report which is not exist in the db. ")
     # report.delete_report_by_id(test_id)
+    cursor = report.get_report_by_tname('Portrait')
+    for document in cursor:
+        print(document)
