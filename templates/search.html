@@ -1,102 +1,58 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <title>Search</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet"
-              href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-              crossorigin="anonymous">
-        <!--
-        <style type="text/css">
-            .card {
-                /* Add shadows to create the "card" effect */
-                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-                transition: 0.3s;
-                margin: 1em;
-                overflow:hidden;
-                }
-            .report-img {
-                width: 12em;
-                float:left;
-                clear:both;
-            }
-            .report-details {
-                width: 12em;
-                float:left;
-                clear:both;
-            }
+{% extends "base.html" %}
+{% set active_page = 'search' %}
+{% block page_title%}search{% endblock %}
+{% block self_content %}
+<div class="d-flex justify-content-center mt-2">
+    <form id="search-input" method="post" class="form-inline">
+        <input type="text" class="form-control mr-2 mt-2"
+        placeholder="Search keyword" name="keyword">
+        <label class="mr-2 mt-2">@</label>
+        <select class="form-control mr-2 mt-2" name="field">
+        <option>All fields</option>
+        <option>Tag</option>
+        <option>Location</option>
+    </select>
+        <input type="submit" class="btn btn-primary mt-2" value="Go">
+    </form>
+</div>
 
-        </style>
-        -->
+<div class="container">
+    <div class="card-deck">
+        {% set report_num = namespace(cnt=0) %}
+        {% for report in reports %}
+        {% set report_num.cnt = report_num.cnt + 1 %}
+        <a class="card mb-2 mt-2 ml-1 mr-1 " style="max-width:
+        13.5em; text-decoration: none;" href="test.html">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-    </head>
-    <body>
-        <header>
-            <nav class="navbar navbar-expand-md navbar-light sticky-top nav-pills"
-                 style="background-color:
-            #ddeeff;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
-                <a href="home.html" class="nav-item nav-link active">Home</a>
-                <a href="search.html" class="nav-item nav-link">Search</a>
-            </nav>
-        </header>
-        <div class="d-flex justify-content-center mt-2">
-            <form id="search-input" method="post" class="form-inline">
-                <input type="text" class="form-control mr-2 mt-2"
-                placeholder="Search keyword">
-                <label class="mr-2 mt-2">@</label>
-                <select class="form-control mr-2 mt-2">
-                <option>All fields</option>
-                <option>Tag</option>
-                <option>Location</option>
-            </select>
-                <input type="submit" class="btn btn-primary mt-2" value="Go">
-            </form>
-        </div>
-
-
-        <div class="container">
-            <div class="card-deck">
-                {% set report_num = namespace(cnt=0) %}
-                {% for report in reports %}
-                {% set report_num.cnt = report_num.cnt + 1 %}
-                <div class="card mb-2 mt-2 ml-1 mr-1">
-                    <img src="resources/img.jpg" class="card-img-top img-fluid">
-                    <div class="card-body">
-                        <h5 class="card-title">{{report.user}}</h5>
-                        <p class="card-text">{{report.description}}hi</p>
-                    </div>
-                </div>
-                <!--  Ref: https://stackoverflow.com/questions/36430816/bootstrap-4-card-deck-with-number-of-columns-based-on-viewport -->
-                {% if report_num.cnt % 2 == 0 %}
-                    <div class="w-100 d-none d-sm-block d-md-none">
-                        <!-- wrap every 2 on sm-->
-                    </div>
-                {% endif %}
-                {% if report_num.cnt % 3 == 0 %}
-                    <div class="w-100 d-none d-md-block d-lg-none">
-                        <!-- wrap every 3 on md-->
-                    </div>
-                {% endif %}
-                {% if report_num.cnt % 4 == 0 %}
-                    <div class="w-100 d-none d-lg-block d-xl-none">
-                        <!-- wrap every 4 on lg-->
-                    </div>
-                {% endif %}
-                {% if report_num.cnt % 5 == 0 %}
-                    <div class="w-100 d-none d-xl-block">
-                        <!-- wrap every 5 on xl-->
-                    </div>
-                {% endif %}
-                {% endfor %}
+            <div class="card-header">{{report.r_username}}</div>
+            <div class="card-body">
+<!--                        <h5 class="card-title">{{report.r_username}}</h5>-->
+                <img src="{{report.r_url}}" class="card-img-top img-fluid">
+                <p class="card-text">{{report.r_description}}</p>
             </div>
-        </div>
-    </body>
-</html>
+        </a>
+        <!--  Ref: https://stackoverflow.com/questions/36430816/bootstrap-4-card-deck-with-number-of-columns-based-on-viewport -->
+        {% if report_num.cnt % 2 == 0 %}
+            <div class="w-100 d-none d-sm-block d-md-none">
+                <!-- wrap every 2 on sm-->
+            </div>
+        {% endif %}
+        {% if report_num.cnt % 3 == 0 %}
+            <div class="w-100 d-none d-md-block d-lg-none">
+                <!-- wrap every 3 on md-->
+            </div>
+        {% endif %}
+        {% if report_num.cnt % 4 == 0 %}
+            <div class="w-100 d-none d-lg-block d-xl-none">
+                <!-- wrap every 4 on lg-->
+            </div>
+        {% endif %}
+        {% if report_num.cnt % 5 == 0 %}
+            <div class="w-100 d-none d-xl-block">
+                <!-- wrap every 5 on xl-->
+            </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

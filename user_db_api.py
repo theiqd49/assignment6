@@ -23,9 +23,10 @@ class user_db_api(object):
     def __init__(self):
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient(
-            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
-            "test?retryWrites=true&w=majority")
+        # client = MongoClient(
+        #     "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
+        #     "test?retryWrites=true&w=majority")
+        client = MongoClient("localhost", 27017)
 
         db = client.apt
         self.collection = db.user

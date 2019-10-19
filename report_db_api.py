@@ -28,8 +28,9 @@ class report_db_api(object):
         """
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj."
-                             "mongodb.net/test?retryWrites=true&w=majority")
+        client = MongoClient("localhost", 27017)
+        # client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj."
+        #                      "mongodb.net/test?retryWrites=true&w=majority")
         db = client.apt
         self.collection = db.report
         self.user_db_api = user_db_api()
