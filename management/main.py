@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 from models.user_db_api import user_db_api
 from report_db_api import report_db_api
 from flask_restful import Api
-from resources.user import User
+from resources.user import User,UserRegister
 import resources
 app = Flask(__name__)
 
@@ -63,7 +63,7 @@ def delete_report():
 #
 # api.add_resource(User, '/add_user')
 api.add_resource(User, '/user/<string:user_name>')
-# api.add_resource(User, '/user/')
+api.add_resource(UserRegister, '/user')
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
 
