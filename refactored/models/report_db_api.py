@@ -1,12 +1,9 @@
-# Mongodb compass connection string:
-# mongodb+srv://yiran:yiran@cluster0-uaytj.mongodb.net/test?retryWrites=true&w=majority
-
 from pymongo import MongoClient
 import logging
 import datetime
 import time
 from bson.objectid import ObjectId
-from user_db_api import user_db_api
+from models.user_db_api import user_db_api
 
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
@@ -28,8 +25,9 @@ class report_db_api(object):
         """
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj."
-                             "mongodb.net/test?retryWrites=true&w=majority")
+        client = MongoClient(
+            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
+            "test?retryWrites=true&w=majority")
         db = client.apt
         self.collection = db.report
         self.user_db_api = user_db_api()

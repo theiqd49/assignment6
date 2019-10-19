@@ -1,6 +1,6 @@
 import datetime
 import time
-from user_db_api import user_db_api
+from refactored.models.user_db_api import user_db_api
 
 if __name__ == "__main__":
     print("Test1: init a user_db_api object and connect to db.")
