@@ -1,16 +1,18 @@
 import datetime
 
 from flask import Flask, render_template, request
-from user_db_api import user_db_api
+from models.user_db_api import user_db_api
 from report_db_api import report_db_api
-
+from flask_restful import Api
+from resources.user import User
+import resources
 app = Flask(__name__)
 
 #access mongodb(open to discussion)
 server = report_db_api()
 report = server.search_report_by_location() #will change to search by id later
 rIndex = 0 #current report index
-
+api = Api(app)
 @app.route('/')
 def root():
     global report
@@ -57,8 +59,10 @@ def delete_report():
         rIndex == rIndex - 1
 
     return render_template('index.html', report=report[rIndex], length=len(report))    
-        
+
+api.add_resource(User, '/user/<int:user_id>')
+api.add_resource(User, '/user/<user_name>')
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)
 
     
