@@ -13,6 +13,7 @@ server = report_db_api()
 report = server.search_report_by_location() #will change to search by id later
 rIndex = 0 #current report index
 api = Api(app)
+
 @app.route('/')
 def root():
     global report
@@ -59,8 +60,10 @@ def delete_report():
         rIndex == rIndex - 1
 
     return render_template('index.html', report=report[rIndex], length=len(report))    
-
-api.add_resource(User, '/user/<int:user_id>')
+#
+# api.add_resource(User, '/add_user')
+api.add_resource(User, '/user/<string:user_name>')
+# api.add_resource(User, '/user/')
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
 

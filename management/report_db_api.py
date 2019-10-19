@@ -28,10 +28,9 @@ class report_db_api(object):
         """
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        # connectionString = 'mongodb+srv://chaiqd94:L9UhG44X6WtuORn2@cluster0-xbor2.gcp.mongodb.net/test?retryWrites=true&w=majority'
-        connectionString = 'mongodb+srv://zhenkai:wzk12afdsvawewra@zhenkai-mongdb-qj6mv.gcp.mongodb.net/test?retryWrites=true&w=majority'
+        connectionString = 'mongodb+srv://chaiqd94:L9UhG44X6WtuORn2@cluster0-xbor2.gcp.mongodb.net/test?retryWrites=true&w=majority'
         client = MongoClient(connectionString)
-        #client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj."
+        # client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj."
         #                     "mongodb.net/test?retryWrites=true&w=majority")
         db = client.apt
         self.collection = db.report
