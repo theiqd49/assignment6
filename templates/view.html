@@ -3,62 +3,24 @@
 {% block content %}
 <h2>View All Themes</h2>
 <hr>
+      {% if length != 0 %}
+      <ul class = "themelist">
+          {% for t in theme %}
+              <li>
+            <a href="{{ url_for('view_one',name='{{ t.t_name }}') }}" target="_blank">
+            <img src="{{ t.t_coverimage }}"  alt="{{ t.t_name }}"/>
+            <h3>{{ t.t_name }}</h3>
+            </a>
+            <button class="button"> Subscribe </button>
+            <p>{{ t.t_description }}</p>
+              </li>
+          {% endfor %}
 
-<ul class="themelist">
-    <li>
-        <a href="{{ url_for('view_one',name=1) }}" target="_blank">
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
-            <h3>Portrait</h3>
-        </a>
-        <button class="button"> Subscribe </button>
-            <p>Description: a portrait is generally not a snapshot, but a composed
-                image of a person in a still position.</p>
-    </li>
-    <li>
-        <a href="{{url_for('view_one',name=2)}}" target="_blank">
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
-            <h3>Landscape</h3>
-        </a>
-        <button class="button"> Subscribe </button>
-            <p>Description: a portrait is generally not a snapshot, but a composed
-                image of a person in a still position.</p>
-    </li>
-    <li>
-        <a href="{{url_for('view_one')}}" target="_blank">
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
-            <h3>Portrait</h3>
-        </a>
-        <button class="button"> Subscribe </button>
-            <p>Description: a portrait is generally not a snapshot, but a composed
-                image of a person in a still position.</p>
-    </li>
-    <li>
-        <a href="{{url_for('view_one')}}" target="_blank">
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
-            <h3>Portrait</h3>
-        </a>
-        <button class="button"> Subscribe </button>
-            <p>Description: a portrait is generally not a snapshot, but a composed
-                image of a person in a still position.</p>
-    </li>
-    <li>
-        <a href="{{url_for('view_one')}}" target="_blank">
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
-            <h3>Portrait</h3>
-        </a>
-        <button class="button"> Subscribe </button>
-            <p>Description: a portrait is generally not a snapshot, but a composed
-                image of a person in a still position.</p>
-    </li>
-    <li>
-        <a href="{{url_for('view_one')}}" target="_blank">
-            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait"/>
-            <h3>Portrait</h3>
-        </a>
-        <button class="button"> Subscribe </button>
-            <p>Description: a portrait is generally not a snapshot, but a composed
-                image of a person in a still position.</p>
-    </li>
-</ul>
+      </ul>
+      {% else %}
+      <div class= "emptytheme">
+	<h4>You haven't created any themes yet :)</h4>
+     </div>
+     {% endif %}
 
 {% endblock %}
