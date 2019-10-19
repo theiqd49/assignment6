@@ -61,7 +61,6 @@ def delete_report():
     return render_template('index.html', report=report[rIndex], length=len(report))    
 
 api.add_resource(User, '/user/<int:user_id>')
-api.add_resource(User, '/user/<user_name>')
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
 
