@@ -1,6 +1,6 @@
 import datetime
 import time
-from report_db_api import report_db_api
+from refactored.models.report_db_api import report_db_api
 
 if __name__ == "__main__":
     print("Test1: init a report_db_api object and connect to db.")

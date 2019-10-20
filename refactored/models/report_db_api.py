@@ -1,13 +1,10 @@
-# Mongodb compass connection string:
-# mongodb+srv://yiran:yiran@cluster0-uaytj.mongodb.net/test?retryWrites=true&w=majority
-
 from pymongo import MongoClient
 import logging
 import datetime
 import time
 from bson.objectid import ObjectId
-from user_db_api import user_db_api
-
+from models.user_db_api import user_db_api
+from db import db
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
 
@@ -28,22 +25,24 @@ class report_db_api(object):
         """
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient("localhost", 27017)
-        # client = MongoClient("mongodb+srv://yiran:yiran@cluster0-uaytj."
-        #                      "mongodb.net/test?retryWrites=true&w=majority")
-        db = client.apt
+        # client = MongoClient(
+        #     "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
+        #     "test?retryWrites=true&w=majority")
+        # db = client.apt
         self.collection = db.report
         self.user_db_api = user_db_api()
 
         server_status_result = db.command("serverStatus")
         self.log.debug(server_status_result)
 
-    def add_report(self, r_uid, r_url, r_time, r_tname, r_location="Mars",
+    def add_report(self, r_uid, r_title, r_url, r_time, r_tname, r_location="Mars",
                    r_description="None", r_tag_list=[]):
         """
         Add a new report to the report collection.
         :param r_uid: Report id
         :type r_uid: str or ObjectID
+        :param r_title: Report title
+        :type r_title: str
         :param r_url: Url of the report's image. At present, the number of
         image is 1 per report
         :type r_url: str
@@ -64,7 +63,7 @@ class report_db_api(object):
         assert type(r_uid) == str or type(r_uid) == ObjectId
         if type(r_uid) == str:
             r_uid = ObjectId(r_uid)
-        assert self.user_db_api.exists_uid(r_uid)
+        # assert self.user_db_api.exists_uid(r_uid)
         assert type(r_url) == str
         # TODO: r_url should fit some kind of regex...
         assert type(r_time) == datetime.datetime
@@ -189,6 +188,11 @@ class report_db_api(object):
         else:
             self.log.warning("Report deletion failed: %s" % result.raw_result)
 
+    def get_report_by_tname(self, r_tname):
+        result = self.collection.find({"r_tname": r_tname})
+        self.log.debug("Get all reports under r_tname %s" % r_tname)
+        return result
+
 
 # Below is the test part.
 if __name__ == "__main__":
@@ -197,16 +201,22 @@ if __name__ == "__main__":
     now = datetime.datetime.now()
     time.sleep(1)
     print("Test2: add a new report with user id(u_id), target url and time. ")
-    test_id = report.add_report("5d8eda3ee1b75277bae9e187", "url", now, "theme_name")
-    time.sleep(1)
+    #test_id = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #test_id1 = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #test_id2 = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #test_id3 = report.add_report("5da733a794196bf0ff5f06db", "url", now, "Portrait")
+    #time.sleep(1)
     print("Test3: get a detailed report by report id(r_id). ")
-    print("Detailed report: ", report.get_report_by_rid(test_id))
-    time.sleep(1)
+    #print("Detailed report: ", report.get_report_by_rid(test_id))
+    #time.sleep(1)
     print("Test4: get a detailed report by location of the report. ")
     print("Detailed report: ", report.search_report_by_location("Mars"))
-    time.sleep(1)
-    print("Test5: delete a report by id. ")
-    report.delete_report_by_id(test_id)
-    time.sleep(1)
-    print("Test6: delete a report which is not exist in the db. ")
-    report.delete_report_by_id(test_id)
+    # time.sleep(1)
+    # print("Test5: delete a report by id. ")
+    # report.delete_report_by_id(test_id)
+    # time.sleep(1)
+    # print("Test6: delete a report which is not exist in the db. ")
+    # report.delete_report_by_id(test_id)
+    cursor = report.get_report_by_tname('Portrait')
+    for document in cursor:
+        print(document)

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% set active_page = 'view' %}
+{% block page_title %}View{% endblock %}
+{% block self_content %}
+<h2>{{ t_name }}</h2>
+<button class="button" onclick="subscribe()"> Subscribe </button>
+<!--TODO implement javascript-->
+<hr>
+{% if length!= 0 %}
+<ul class="reportlist">
+    {% for r in report %}
+    <li>
+        <div class = "report" >
+            <img src="../static/images/portrait.jpg"  alt="Theme-Portrait" height="120" width="120"/>
+         </div>
+
+        <div class = "description">
+            <t4>Theme: {{ r.r_tname }}</t4>
+            <p>Author: {{r.r_uid }}</p>
+            <p>Time: {{ r.r_time }}</p>
+            <p>Location: {{ r.r_location }}</p>
+            <p>tags:
+            <ul>
+            {% for t in r.r_tag_list %}
+              <li>{{ t }}</li>
+            {% endfor %}
+            </ul>
+            </p>
+            <p>Description: {{ r.r_description }}</p>
+        </div>
+    <hr>
+    </li>
+    {% endfor %}
+</ul>
+    {% else %}
+      <div class= "emptyreport">
+	  <h4>No report under this theme yet :)</h4>
+      </div>
+     {% endif %}
+{% endblock %}
