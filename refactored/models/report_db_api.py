@@ -63,6 +63,7 @@ class report_db_api(object):
         assert type(r_uid) == str or type(r_uid) == ObjectId
         if type(r_uid) == str:
             r_uid = ObjectId(r_uid)
+        assert type(r_title) == str
         # assert self.user_db_api.exists_uid(r_uid)
         assert type(r_url) == str
         # TODO: r_url should fit some kind of regex...
@@ -77,6 +78,7 @@ class report_db_api(object):
             assert type(_tag) == str
 
         one_report = {"r_uid": r_uid,
+                      "r_title": r_title,
                       "r_url": r_url,
                       "r_time": r_time,
                       "r_tname": r_tname,

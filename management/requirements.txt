@@ -1,4 +1,0 @@
-Flask==1.0.2
-PyMongo==3.7.2
-dnspython
-flask_restful
