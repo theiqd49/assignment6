@@ -35,12 +35,14 @@ class report_db_api(object):
         server_status_result = db.command("serverStatus")
         self.log.debug(server_status_result)
 
-    def add_report(self, r_uid, r_url, r_time, r_tname, r_location="Mars",
+    def add_report(self, r_uid, r_title, r_url, r_time, r_tname, r_location="Mars",
                    r_description="None", r_tag_list=[]):
         """
         Add a new report to the report collection.
         :param r_uid: Report id
         :type r_uid: str or ObjectID
+        :param r_title: Report title
+        :type r_title: str
         :param r_url: Url of the report's image. At present, the number of
         image is 1 per report
         :type r_url: str
