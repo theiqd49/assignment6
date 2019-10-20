@@ -5,8 +5,8 @@ from models.user_db_api import user_db_api
 from models.theme_db_api import theme_db_api
 from models.report_db_api import report_db_api
 
-theme_api = theme_db_api()
-report_api = report_db_api()
+theme_server = theme_db_api()
+report_server = report_db_api()
 from libs import JSONEncoder
 
 
@@ -22,7 +22,8 @@ class CreateReport(Resource):
     parser.add_argument('report_tags', type=list, required=True, help="this field cannot be left blank")
 
     def get(self):
-        return make_response(render_template("CreateReport.html"), 200)
+        theme_list = theme_server.get_all_theme_name()
+        return make_response(render_template("CreateReport.html", theme_list=theme_list), 200)
 
     def post(self):
         data = CreateReport.parser.parse_args()
@@ -36,8 +37,8 @@ class CreateReport(Resource):
         report_description = data['report_description']
         report_tags = data['report_tags']
 
-        inserted_id = report_api.add_report(user_id, report_title, report_image, report_time, report_theme, report_location,
-                                            report_description, report_tags)
+        inserted_id = report_server.add_report(user_id, report_title, report_image, report_time, report_theme, report_location,
+                                               report_description, report_tags)
         if inserted_id is None:
             return {'message': gettext("fail in adding report")}, 404
         else:
@@ -62,8 +63,9 @@ class CreateTheme(Resource):
         theme_description = data['theme_description']
         theme_image_list = data['theme_image_list']
 
-        inserted_id = theme_api.add_theme(theme_name, theme_coverimage, theme_description, theme_image_list)
+        inserted_id = theme_server.add_theme(theme_name, theme_coverimage, theme_description, theme_image_list)
         if inserted_id is None:
             return {'message': gettext("fail in adding theme")}, 404
         else:
             return {'inserted_id': str(inserted_id)}, 200
+

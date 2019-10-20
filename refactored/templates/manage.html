@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% set active_page = 'manage' %}
+{% block page_title%}manage{% endblock %}
+{% block css_script %}<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+{% block self_content %}
+    <div id = "reportlist">
+      <h2>Your Reports</h2>
+      <form action="/manage" method="get">
+	<button type="submit">Previous Report</button>
+      </form>
+      {% if length != 0 %}
+      <div class = "report">
+	<h4>Theme</h4>
+	<div class = "description">
+	  <p>Time: {{report.r_time.strftime('%a, %Y %b %d %H:%M')}}</p>
+	  <p>Location: {{report.r_location}}</p>
+	  <p>Description: {{report.r_description}}</p>
+	</div>
+	<div class="image">
+	  <img class="subimg" src="{{report.r_url}}">
+	</div>
+      </div>
+      {% else %}
+      <div class= "emptyreport">
+	<h4>You haven't created any reports yet :)</h4>
+     </div>
+     {% endif %}			
+      <form action="/manageincr" method="get">
+	  <button type="submit">Next Report</button>
+      </form>
+      <form action="/managedele/0" method="post">
+	<button type="submit">Delete Current Report</button>
+      </form>
+    </div>
+    <hr>
+    <div id = "subscription">
+      <h2>Subscribed Themes</h2>
+      {% for theme in themes %}
+      <div class = "theme">
+	<p>{{theme.t_name}}</p>
+	<img class="subimg" src="{{theme.t_coverimage}}">
+	<form action="/unsub" method="delete">
+	  <button type="submit">Unsubscribe</button>
+	</form>
+      </div>
+      {% endfor %}
+    </div>
+{% endblock %}
