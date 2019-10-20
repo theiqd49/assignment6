@@ -4,7 +4,7 @@ import datetime
 import time
 from bson.objectid import ObjectId
 from models.user_db_api import user_db_api
-
+from db import db
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
 
@@ -25,10 +25,10 @@ class report_db_api(object):
         """
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient(
-            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
-            "test?retryWrites=true&w=majority")
-        db = client.apt
+        # client = MongoClient(
+        #     "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
+        #     "test?retryWrites=true&w=majority")
+        # db = client.apt
         self.collection = db.report
         self.user_db_api = user_db_api()
 

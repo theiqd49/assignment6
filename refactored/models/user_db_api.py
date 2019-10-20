@@ -3,7 +3,7 @@ import datetime
 import logging
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from db import db
 # TODO: put LOG_FORMAT in common place
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
@@ -24,11 +24,11 @@ class user_db_api(object):
     def __init__(self):
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient(
-            "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
-            "test?retryWrites=true&w=majority")
-
-        db = client.apt
+        # client = MongoClient(
+        #     "mongodb+srv://zed:yy9826@cluster0-uaytj.mongodb.net/" \
+        #     "test?retryWrites=true&w=majority")
+        #
+        # db = client.apt
         self.collection = db.user
 
         server_status_result = db.command("serverStatus")

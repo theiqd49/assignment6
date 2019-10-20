@@ -3,12 +3,12 @@
 {% block page_title %}View{% endblock %}
 {% block self_content %}
 <h2>View All Themes</h2>
-<hr>
+{#<hr>#}
       {% if length != 0 %}
       <ul class = "themelist">
           {% for t in theme %}
               <li>
-            <a href="{{ url_for('view_one',t_name=t.t_name) }}" target="_blank">
+            <a href="{{ url_for('viewone',t_name=t.t_name) }}" target="_blank">
             <img src="{{ t.t_coverimage }}"  alt="{{ t.t_name }}"/>
             <h3>{{ t.t_name }}</h3>
             </a>

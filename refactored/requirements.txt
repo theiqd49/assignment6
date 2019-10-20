@@ -24,4 +24,4 @@ rsa==4.0
 six==1.12.0
 urllib3==1.24.3
 Werkzeug==0.16.0
-flask_restful
+flask_restful==0.3.7

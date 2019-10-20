@@ -51,6 +51,9 @@ class CreateTheme(Resource):
     parser.add_argument('theme_description', type=str, required=True, help="this field cannot be left blank")
     parser.add_argument('theme_image_list', type=list, required=True, help="this field cannot be left blank")
 
+    def get(self):
+        return make_response(render_template("CreateTheme.html"), 200)
+
     def post(self):
         data = CreateTheme.parser.parse_args()
         print(data)

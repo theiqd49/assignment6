@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import logging
 from bson.objectid import ObjectId
-
+from db import db
 # TODO: put LOG_FORMAT in common place
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
@@ -22,10 +22,10 @@ class theme_db_api(object):
     def __init__(self):
         self.log = logging
         self.log.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-        client = MongoClient(
-            "mongodb+srv://xueyao:xueyao@cluster0-yv0yf.mongodb.net/test?retryWrites=true&w=majority")
+        # client = MongoClient(
+        #     "mongodb+srv://xueyao:xueyao@cluster0-yv0yf.mongodb.net/test?retryWrites=true&w=majority")
 
-        db = client.apt
+        # db = client.apt
         self.collection = db.theme
 
         server_status_result = db.command("serverStatus")
