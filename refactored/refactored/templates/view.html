@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% set active_page = 'view' %}
+{% block page_title %}View{% endblock %}
+{% block self_content %}
+<h2>View All Themes</h2>
+{#<hr>#}
+      {% if length != 0 %}
+      <ul class = "themelist">
+          {% for t in theme %}
+              <li>
+            <a href="{{ url_for('viewone',t_name=t.t_name) }}" target="_blank">
+            <img src="{{ t.t_coverimage }}"  alt="{{ t.t_name }}"/>
+            <h3>{{ t.t_name }}</h3>
+            </a>
+            <button class="button"> Subscribe </button>
+            <p>{{ t.t_description }}</p>
+              </li>
+          {% endfor %}
+
+      </ul>
+      {% else %}
+      <div class= "emptytheme">
+	<h4>You haven't created any themes yet :)</h4>
+     </div>
+     {% endif %}
+
+{% endblock %}
