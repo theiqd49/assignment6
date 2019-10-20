@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-
-{% block content %}
+{% set active_page = 'view' %}
+{% block page_title %}View{% endblock %}
+{% block self_content %}
 <h2>View All Themes</h2>
 <hr>
       {% if length != 0 %}

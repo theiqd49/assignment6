@@ -4,7 +4,8 @@ from models.theme_db_api import theme_db_api
 from models.report_db_api import report_db_api
 from flask_restful import Api
 from resources.view import ViewOne
-
+from resources.user import User, UserRegister
+from resources.search import Search
 
 app = Flask(__name__)
 
@@ -38,7 +39,9 @@ def view_one(t_name):
 
 
 api.add_resource(ViewOne, '/view/<string:t_name>')
-
+api.add_resource(User, '/user/<string:user_name>')
+api.add_resource(UserRegister, '/user')
+api.add_resource(Search, '/search.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)

@@ -11,14 +11,14 @@ LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 class user_db_api(object):
     """
     A class contains all interfaces to manipulate user data in Mongodb
-    
+
     TODO:
     Attributes
-    ----------   
+    ----------
 
     Methods
     -------
-    
+
     """
 
     def __init__(self):
@@ -52,7 +52,7 @@ class user_db_api(object):
                  u_gender=None, u_phone=None, u_description="None",
                  u_avatar="None", u_report_list=[], u_subscribed_themes=[]):
         """
-        Add one user record into database, need to provide at least email and 
+        Add one user record into database, need to provide at least email and
            password
         TODO: password may need to be salted
 
@@ -136,7 +136,7 @@ class user_db_api(object):
     def modify_username(self, u_id, new_username):
         """
 
-        Modify username for user identified by user id        
+        Modify username for user identified by user id
         :param u_id: the u_id of the user whose username is to be modified
         :param new_username: str
         """
@@ -156,7 +156,7 @@ class user_db_api(object):
 
     def modify_password(self, u_id, old_password, new_password):
         """
-        Modify password for user identified by user id, need to verify the 
+        Modify password for user identified by user id, need to verify the
             old password before update
 
         :param u_id: u_id of the user who is trying to modify password
@@ -178,7 +178,7 @@ class user_db_api(object):
 
     def delete_user_by_id(self, u_id):
         """
-        Delete user report identified by user id in database 
+        Delete user report identified by user id in database
 
         :param u_id: delete user by u_id
         """
